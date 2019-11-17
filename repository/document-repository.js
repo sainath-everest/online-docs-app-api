@@ -18,7 +18,11 @@ const documentRepo = {
     },
     delete: async (req) => {
         const document = await Document.findByIdAndRemove({ _id: req.params.id });
-        await Document.findByIdAndUpdate(document.parentId, { $pull: { "children": document._id } });
+        if(document.parentId){
+            await Document.findByIdAndUpdate(document.parentId, { $pull: { "children": document._id } });
+
+        }
+       
         let children = document.children;
         children.forEach(element => {
             Document.findByIdAndRemove(element).then(() => {
