@@ -3,7 +3,9 @@ const Document = require('../model/document')
 const documentRepo = {
     save: async (req) => {
         const document = await Document.create(req.body);
-        await Document.findByIdAndUpdate(req.body.parentId, { $push: { "children": [document._id] } });
+        if(document.parentId){
+            await Document.findByIdAndUpdate(req.body.parentId, { $push: { "children": [document._id] } });
+        }
         return document;
     },
     get: async (req) => {
